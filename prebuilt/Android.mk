@@ -13,15 +13,25 @@
 # limitations under the License.
 
 LOCAL_PATH := $(call my-dir)
-# Edited by AlaskaLinuxUser for AOKP MM.
+# Edited by AlaskaLinuxUser for AOKP N.
 # https://thealsakalinuxuser.wordpress.com
 #
 # Prebuilt APKs
 #
 
 include $(CLEAR_VARS)
+LOCAL_MODULE := OmniSwitch
+LOCAL_MODULE_OWNER := aokp
+LOCAL_SRC_FILES := common/app/$(LOCAL_MODULE).apk
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_SUFFIX := .apk
+LOCAL_MODULE_CLASS := APPS
+LOCAL_CERTIFICATE := PRESIGNED
+include $(BUILD_PREBUILT)
+
+include $(CLEAR_VARS)
 LOCAL_MODULE := ka
-LOCAL_MODULE_OWNER := slim
+LOCAL_MODULE_OWNER := aokp
 LOCAL_SRC_FILES := common/app/$(LOCAL_MODULE).apk
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_SUFFIX := .apk
@@ -31,7 +41,7 @@ include $(BUILD_PREBUILT)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := selinuxplugin
-LOCAL_MODULE_OWNER := slim
+LOCAL_MODULE_OWNER := aokp
 LOCAL_SRC_FILES := common/app/$(LOCAL_MODULE).apk
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_SUFFIX := .apk
