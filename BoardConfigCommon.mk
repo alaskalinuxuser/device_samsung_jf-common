@@ -19,7 +19,7 @@
 # included in a build is to use PRODUCT_PACKAGES in a product
 # definition file).
 #
-# Edited by AlaskaLinuxUser for AOKP MM.
+# Edited by AlaskaLinuxUser for PAC 6.0.1
 # https://thealsakalinuxuser.wordpress.com
 # Inherit from qcom-common
 -include device/samsung/qcom-common/BoardConfigCommon.mk
@@ -29,6 +29,9 @@ COMMON_PATH := device/samsung/jf-common
 # Platform
 TARGET_BOARD_PLATFORM := msm8960
 USE_CLANG_PLATFORM_BUILD := true
+
+# WJH ADDED TW_THEME
+TW_THEME := portrait_hdpi
 
 # Architecture
 TARGET_CPU_VARIANT := krait
@@ -41,7 +44,7 @@ BOARD_KERNEL_CMDLINE := androidboot.hardware=qcom user_debug=31 zcache msm_rtb.f
 BOARD_KERNEL_BASE := 0x80200000
 BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x02000000
 BOARD_KERNEL_PAGESIZE := 2048
-TARGET_KERNEL_CONFIG := aklu_jf_defconfig
+TARGET_KERNEL_CONFIG := akludev_jf_defconfig
 TARGET_KERNEL_CROSS_COMPILE_PREFIX := arm-linux-androideabi-
 TARGET_KERNEL_SOURCE := kernel/samsung/jf
 
