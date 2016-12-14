@@ -1,5 +1,6 @@
-# device_samsung_jf-common
+# aokp_device_samsung_jf-common
 
-My plan is to clean up my repositories by having multiple branches in fewer repositories, rather than multiple repositories with no branches. In time, you should be able to view all of the previous repositories by looking under the branches here.
+Common device configuration for Samsung Galaxy S4 (Qualcomm Variants)
 
-https://thealaskalinuxuser.wordpress.com
+Edited by AlaskaLinuxUser for AOKP MM.
+https://thealsakalinuxuser.wordpress.com
