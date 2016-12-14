@@ -13,14 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Edited by AlaskaLinuxUser for AOKP MM.
-# https://thealsakalinuxuser.wordpress.com
+
 $(LOCAL_PATH) := device/samsung/jf-common
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
 # Get non-open-source specific aspects if available
 $(call inherit-product-if-exists, vendor/samsung/jf-common/jf-common-vendor.mk)
+
+# WJH adding Kernel Aduitor apk and selinux apk - it is in the jf-common folder prebuilt
+PRODUCT_PACKAGES += \
+    ka \
+    selinuxplugin
 
 # Overlay
 DEVICE_PACKAGE_OVERLAYS += device/samsung/jf-common/overlay
@@ -33,6 +37,7 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.camera.flash-autofocus.xml:system/etc/permissions/android.hardware.camera.flash-autofocus.xml \
     frameworks/native/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
     frameworks/native/data/etc/android.hardware.consumerir.xml:system/etc/permissions/android.hardware.consumerir.xml \
+    frameworks/native/data/etc/android.hardware.ethernet.xml:system/etc/permissions/android.hardware.ethernet.xml \
     frameworks/native/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
     frameworks/native/data/etc/android.hardware.nfc.xml:system/etc/permissions/android.hardware.nfc.xml \
     frameworks/native/data/etc/android.hardware.nfc.hce.xml:system/etc/permissions/android.hardware.nfc.hce.xml \
@@ -54,6 +59,10 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/com.nxp.mifare.xml:system/etc/permissions/com.nxp.mifare.xml \
     frameworks/native/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml
 
+# System Properties
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+    persist.sys.usb.config=mtp
+
 # Device uses high-density artwork where available
 PRODUCT_AAPT_CONFIG := normal
 PRODUCT_AAPT_PREF_CONFIG := xxhdpi
@@ -65,10 +74,6 @@ TARGET_SCREEN_WIDTH := 1080
 $(call inherit-product, frameworks/native/build/phone-xxhdpi-2048-dalvik-heap.mk)
 
 $(call inherit-product-if-exists, frameworks/native/build/phone-xxhdpi-2048-hwui-memory.mk)
-
-# Art
-PRODUCT_PROPERTY_OVERRIDES += \
-    dalvik.vm.dex2oat-swap=false
 
 # Audio
 PRODUCT_PACKAGES += \
@@ -87,13 +92,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/bluetooth/bcm4335_prepatch.hcd:system/vendor/firmware/bcm4335_prepatch.hcd
 
-# WJH adding kernel adiutor apk and selinux plugin apk.
-# These are found in jf-common/prebuilt/common/app
-PRODUCT_PACKAGES += \
-    ka \
-    selinuxplugin
-
-# CAMERA
+# Camera Wrapper
 PRODUCT_PACKAGES += \
     camera.msm8960
 
@@ -116,14 +115,13 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     SamsungDoze
 
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/gps.conf:/system/etc/gps.conf \
-    $(LOCAL_PATH)/configs/sap.conf:/system/etc/sap.conf \
-    $(LOCAL_PATH)/configs/izat.conf:/system/etc/izat.conf
-
-# Gello
+# GPS
 PRODUCT_PACKAGES += \
-    Gello
+    gps.msm8960
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/gps/etc/gps.conf:/system/etc/gps.conf \
+    $(LOCAL_PATH)/gps/etc/sap.conf:/system/etc/sap.conf
 
 # IPv6 tethering
 PRODUCT_PACKAGES += \
@@ -174,15 +172,18 @@ PRODUCT_COPY_FILES += \
 
 # OMX
 PRODUCT_PACKAGES += \
-    libdivxdrmdecrypt \
-    libOmxCore \
+    libdashplayer \
     libOmxVdec \
     libOmxVenc \
     libOmxAacEnc \
     libOmxAmrEnc \
     libOmxEvrcEnc \
     libOmxQcelp13Enc \
-    libstagefrighthw
+    libstagefrighthw \
+    qcmediaplayer
+
+PRODUCT_BOOT_JARS += \
+    qcmediaplayer
 
 # Power
 PRODUCT_PACKAGES += \
@@ -192,19 +193,21 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     fstab.qcom \
     init.carrier.rc \
+    init.crda.sh \
     init.qcom.rc \
     init.qcom.power.rc \
     init.qcom.usb.rc \
     init.target.rc \
     ueventd.qcom.rc
 
-# Samsung symbols
-PRODUCT_PACKAGES += \
-    libsamsung_symbols
-
-# SPN override
+# Thermal
 PRODUCT_COPY_FILES += \
-    device/samsung/jf-common/selective-spn-conf.xml:system/etc/selective-spn-conf.xml
+    $(LOCAL_PATH)/configs/thermal-engine.conf:system/etc/thermal-engine.conf \
+    $(LOCAL_PATH)/configs/thermal-engine-8064ab.conf:system/etc/thermal-engine-8064ab.conf
+
+# USB
+PRODUCT_PACKAGES += \
+    com.android.future.usb.accessory
 
 # Wifi
 PRODUCT_PACKAGES += \
@@ -233,6 +236,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # display
 PRODUCT_PROPERTY_OVERRIDES += \
+    ro.hwui.text_cache_width=2048 \
     ro.opengles.version=196608 \
     ro.sf.lcd_density=480
 
@@ -244,11 +248,11 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.data.ds_fmc_app.mode=0 \
     persist.data_netmgrd_nint=16 \
-    persist.data.qmi.adb_logmask=0 \
     persist.omh.enabled=1 \
     persist.radio.add_power_save=1 \
     persist.radio.fill_eons=1 \
     persist.radio.use_se_table_only=1 \
+    ro.telephony.ril.config=newDriverCallU,newDialCode \
     ro.ril.telephony.mqanelements=6 \
     ro.telephony.mms_data_profile=5
 
@@ -278,11 +282,20 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # qualcomm
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.timed.enable=true \
-    ro.vendor.extension_library=libqti-perfd-client.so
+    ro.vendor.extension_library=/system/lib/libqc-opt.so
+
+# recovery
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.cwm.enable_key_repeat=true \
+    ro.cwm.repeatable_keys=114,115
 
 # ril
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.telephony.ril_class=jflteRIL
+
+# usb
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.sys.isUsbOtgEnabled=true
 
 # wifi
 PRODUCT_PROPERTY_OVERRIDES += \

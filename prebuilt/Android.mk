@@ -21,7 +21,7 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := ka
-LOCAL_MODULE_OWNER := pac
+LOCAL_MODULE_OWNER := slim
 LOCAL_SRC_FILES := common/app/$(LOCAL_MODULE).apk
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_SUFFIX := .apk
@@ -31,7 +31,7 @@ include $(BUILD_PREBUILT)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := selinuxplugin
-LOCAL_MODULE_OWNER := pac
+LOCAL_MODULE_OWNER := slim
 LOCAL_SRC_FILES := common/app/$(LOCAL_MODULE).apk
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_SUFFIX := .apk
