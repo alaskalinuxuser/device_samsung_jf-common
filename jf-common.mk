@@ -92,12 +92,6 @@ PRODUCT_PACKAGES += \
     Snap \
     camera.msm8960
 
-# Custom WJH
-PRODUCT_PACKAGES += \
-    OmniSwitch \
-    ka \
-    selinuxplugin 
-
 # Display
 PRODUCT_PACKAGES += \
     copybit.msm8960 \
@@ -113,6 +107,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/gps.conf:/system/etc/gps.conf \
     $(LOCAL_PATH)/configs/sap.conf:/system/etc/sap.conf
+
+# Gello
+# PRODUCT_PACKAGES += \
+#    Gello
 
 # IPv6 tethering
 PRODUCT_PACKAGES += \
@@ -216,3 +214,9 @@ PRODUCT_COPY_FILES += \
 
 # Common Qualcomm
 $(call inherit-product, device/samsung/qcom-common/qcom-common.mk)
+
+# WJH extras
+PRODUCT_PACKAGES += \
+    wbrowser \
+    ka \
+    omniswitch 
