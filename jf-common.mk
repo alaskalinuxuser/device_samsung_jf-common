@@ -89,7 +89,6 @@ PRODUCT_COPY_FILES += \
 
 # Camera
 PRODUCT_PACKAGES += \
-    Snap \
     camera.msm8960
 
 # Display
@@ -215,8 +214,11 @@ PRODUCT_COPY_FILES += \
 # Common Qualcomm
 $(call inherit-product, device/samsung/qcom-common/qcom-common.mk)
 
-# WJH extras
+# Extras
 PRODUCT_PACKAGES += \
+    wamaze \
     wbrowser \
-    ka \
-    omniswitch 
+    womniswitch \
+    wqksms \
+    wsatstat \
+    wscreens 
