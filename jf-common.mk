@@ -160,6 +160,9 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/libnfc-brcm.conf:system/etc/libnfc-brcm.conf \
     $(LOCAL_PATH)/configs/nfcee_access.xml:system/etc/nfcee_access.xml
 
+PRODUCT_PROPERTY_OVERRIDES += \
+    camera2.portability.force_api=1
+
 # OMX
 PRODUCT_PACKAGES += \
     libOmxCore \
@@ -218,4 +221,5 @@ $(call inherit-product, device/samsung/qcom-common/qcom-common.mk)
 # WJH extras
 PRODUCT_PACKAGES += \
     wbrowser \
-    ka 
+    ka \
+    omniswitch 
