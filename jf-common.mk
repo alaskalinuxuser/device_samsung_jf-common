@@ -89,7 +89,8 @@ PRODUCT_COPY_FILES += \
 
 # Camera
 PRODUCT_PACKAGES += \
-    camera.msm8960
+    camera.msm8960 \
+    Camera2
 
 # Display
 PRODUCT_PACKAGES += \
@@ -158,6 +159,9 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/libnfc-brcm.conf:system/etc/libnfc-brcm.conf \
     $(LOCAL_PATH)/configs/nfcee_access.xml:system/etc/nfcee_access.xml
+
+PRODUCT_PROPERTY_OVERRIDES += \
+    camera2.portability.force_api=1
 
 # OMX
 PRODUCT_PACKAGES += \
