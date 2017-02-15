@@ -195,13 +195,7 @@
     -->
     <integer name="config_longPressOnHomeBehavior">3</integer>
 
-    <!-- Disable the home key unlock setting -->
-    <!-- <bool name="config_disableHomeUnlockSetting">false</bool> -->
-
     <bool name="config_enableWifiDisplay">true</bool>
-
-    <!-- Panel auto-brightness configuration value -->
-    <!-- <integer name="config_panelAutoBrightnessValue">1</integer> -->
 
     <!-- Base "touch slop" value used by ViewConfiguration as a
          movement threshold where scrolling should begin. -->
@@ -248,8 +242,8 @@
          (range of 18 - 21 kHz). -->
     <bool name="config_supportSpeakerNearUltrasound">false</bool>
 
-    <!-- Support in Surfaceflinger for blur layers.
-         NOTE: This requires additional hardware-specific code. -->
-    <!--bool name="config_ui_blur_enabled">true</bool-->
+    <!-- WJH - Let's get this show on the road! -->
+    <add-resource type="integer" name="config_deviceHardwareKeys">83</add-resource>
+    <add-resource type="integer" name="config_deviceHardwareWakeKeys">65</add-resource>
 
 </resources>
