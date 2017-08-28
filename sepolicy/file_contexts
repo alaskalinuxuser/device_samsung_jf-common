@@ -9,3 +9,6 @@
 
 # Needed by NFC
 /dev/bcm2079x                                              u:object_r:nfc_device:s0
+
+#SonyTimeKeep
+/system/bin/timekeep                                       u:object_r:timekeep_exec:s0

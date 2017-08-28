@@ -218,8 +218,12 @@ PRODUCT_COPY_FILES += \
 # Common Qualcomm
 $(call inherit-product, device/samsung/qcom-common/qcom-common.mk)
 
+# Sony timekeep
+PRODUCT_PACKAGES += \
+    timekeep \
+    TimeKeep
+
 # WJH extras
 PRODUCT_PACKAGES += \
-    wbrowser \
     ka \
     omniswitch 

@@ -1,5 +1,8 @@
 # Common device configuration for Samsung Galaxy S4 (Snapdragon variants)
 
+Edited for AOKP 7.1.2
+https://thealaskalinuxuser.wordpress.com
+
 ## Spec Sheet
 
 | Feature                 | Specification                     |
