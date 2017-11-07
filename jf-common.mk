@@ -49,6 +49,7 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml \
     frameworks/native/data/etc/android.hardware.wifi.direct.xml:system/etc/permissions/android.hardware.wifi.direct.xml \
     frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
+    frameworks/native/data/etc/android.software.midi.xml:system/etc/permissions/android.software.midi.xml \
     frameworks/native/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
     frameworks/native/data/etc/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml \
     frameworks/native/data/etc/com.nxp.mifare.xml:system/etc/permissions/com.nxp.mifare.xml \
@@ -73,8 +74,7 @@ PRODUCT_PACKAGES += \
     audio.r_submix.default \
     audio.usb.default \
     libaudio-resampler \
-    libqcomvoiceprocessing \
-    tinymix
+    libqcomvoiceprocessing
 
 # Audio configuration
 PRODUCT_COPY_FILES += \
@@ -84,13 +84,16 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/audio/mixer_paths.xml:system/etc/mixer_paths.xml
 
 # Bluetooth
+PRODUCT_PACKAGES += \
+    libbt-vendor
+
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/bluetooth/bcm4335_prepatch.hcd:system/vendor/firmware/bcm4335_prepatch.hcd
+    $(LOCAL_PATH)/bluetooth/bcm4335_prepatch.hcd:system/vendor/firmware/prepatch/bcm4335_prepatch.hcd
 
 # Camera
 PRODUCT_PACKAGES += \
-    Snap \
-    camera.msm8960
+    camera.msm8960 \
+    Camera2
 
 # Display
 PRODUCT_PACKAGES += \
@@ -98,19 +101,15 @@ PRODUCT_PACKAGES += \
     gralloc.msm8960 \
     hwcomposer.msm8960 \
     libgenlock \
-    memtrack.msm8960
+    memtrack.msm8960 \
+    libqdutils \
+    libqdMetaData
 
-# Doze
-PRODUCT_PACKAGES += \
-    SamsungDoze
-
+# GPS
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/gps.conf:/system/etc/gps.conf \
     $(LOCAL_PATH)/configs/sap.conf:/system/etc/sap.conf
 
-# Gello
-# PRODUCT_PACKAGES += \
-#    Gello
 
 # IPv6 tethering
 PRODUCT_PACKAGES += \
@@ -157,8 +156,8 @@ PRODUCT_PACKAGES += \
     com.android.nfc_extras
 
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/libnfc-brcm.conf:system/etc/libnfc-brcm.conf \
-    $(LOCAL_PATH)/configs/nfcee_access.xml:system/etc/nfcee_access.xml
+    $(LOCAL_PATH)/configs/libnfc-brcm.conf:system/vendor/etc/libnfc-brcm.conf \
+    $(LOCAL_PATH)/configs/nfcee_access.xml:system/vendor/etc/nfcee_access.xml
 
 PRODUCT_PROPERTY_OVERRIDES += \
     camera2.portability.force_api=1
@@ -172,11 +171,10 @@ PRODUCT_PACKAGES += \
     libOmxAmrEnc \
     libOmxEvrcEnc \
     libOmxQcelp13Enc \
+    libc2dcolorconvert \
+    libmm-omxcore \
     libstagefrighthw
 
-# Power
-PRODUCT_PACKAGES += \
-    power.msm8960
 
 # Ramdisk
 PRODUCT_PACKAGES += \
@@ -189,11 +187,11 @@ PRODUCT_PACKAGES += \
 
 # RIL
 PRODUCT_PACKAGES += \
-    libshim_ril
+    libshim_atomic
 
 # SPN override
 PRODUCT_COPY_FILES += \
-    device/samsung/jf-common/selective-spn-conf.xml:system/etc/selective-spn-conf.xml
+    $(LOCAL_PATH)/prebuilt/etc/selective-spn-conf.xml:system/etc/selective-spn-conf.xml
 
 # Stlport
 PRODUCT_PACKAGES += \
@@ -201,6 +199,7 @@ PRODUCT_PACKAGES += \
 
 # Thermal
 PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/thermal-engine.conf:system/etc/thermal-engine.conf \
     $(LOCAL_PATH)/configs/thermal-engine-8064ab.conf:system/etc/thermal-engine-8064ab.conf
 
 # Wifi
@@ -208,6 +207,7 @@ PRODUCT_PACKAGES += \
     libnetcmdiface \
     macloader \
     hostapd \
+    wificond \
     wpa_supplicant \
     wpa_supplicant.conf
 
@@ -218,10 +218,8 @@ PRODUCT_COPY_FILES += \
 # Common Qualcomm
 $(call inherit-product, device/samsung/qcom-common/qcom-common.mk)
 
-# Sony timekeep
-PRODUCT_PACKAGES += \
-    timekeep \
-    TimeKeep
+# HIDL
+$(call inherit-product, $(LOCAL_PATH)/hidl.mk)
 
 # WJH extras
 PRODUCT_PACKAGES += \

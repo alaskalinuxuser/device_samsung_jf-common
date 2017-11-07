@@ -38,7 +38,7 @@ on early-init
     chmod 0755 /sys/kernel/debug
 
 on init
-    export LD_SHIM_LIBS /system/lib/libril.so|libshim_ril.so
+    export LD_SHIM_LIBS "/system/bin/mpdecision|libshim_atomic.so"
 
     # Set permissions for efs partition
     mkdir /efs 0771 system radio
@@ -47,7 +47,10 @@ on init
 
 on fs
     mount_all fstab.qcom
-    setprop ro.product.name jgedlteue
+    setprop ro.product.name jfltetmo
+
+    chown system radio /dev/block/platform/msm_sdcc.1/by-name
+    chmod 0775 /dev/block/platform/msm_sdcc.1/by-name
 
 on post-fs-data
     # Create directories for tombstone
@@ -63,9 +66,6 @@ on post-fs-data
     mkdir /data/audio 0770 media audio
     mkdir /data/misc/audio 0770 audio audio
 
-    # Create directory for bluetooth
-    mkdir /data/misc/bluetooth 0770 bluetooth bluetooth
-
     # Create directory for CNE
     mkdir /data/connectivity 0771 system system
 
@@ -76,9 +76,6 @@ on post-fs-data
 
     # Create directory for HDCP 2.x
     mkdir /data/system/hdcp2 0775 system system
-
-    # Create directory for hostapd
-    mkdir /data/hostapd 0770 system wifi
 
     # Create directory from IMS services
     mkdir /data/shared 0755 system system
@@ -102,17 +99,11 @@ on post-fs-data
     mkdir /data/time 0700 system system
 
     # Create directories for WiFi
-    mkdir /system/etc/wifi 0770 wifi wifi
-    chmod 0770 /system/etc/wifi
-    chmod 0660 /system/etc/wifi/wpa_supplicant.conf
-    chown wifi wifi /system/etc/wifi/wpa_supplicant.conf
-    # WPA_supplicant control socket for android wifi.c (android private socket)
     mkdir /data/misc/wifi 0770 wifi wifi
     mkdir /data/misc/wifi/sockets 0770 wifi wifi
-    chmod 0660 /data/misc/wifi/wpa_supplicant.conf
-    chown wifi wifi /data/misc/wifi/wpa_supplicant.conf
-
-    mkdir /data/misc/dhcp 0775 dhcp dhcp
+    mkdir /data/misc/wifi/wpa_supplicant 0770 wifi wifi
+    mkdir /data/misc/dhcp 0770 dhcp dhcp
+    chown dhcp dhcp /data/misc/dhcp
 
     mkdir /data/qcks 0771 system system
 
@@ -158,10 +149,10 @@ on boot
     chmod 0660 /proc/bluetooth/sleep/btwrite
     chmod 0660 /sys/class/rfkill/rfkill0/state
     chmod 0660 /dev/ttyHS0
-    chown bluetooth net_bt_stack /proc/bluetooth/sleep/lpm
-    chown bluetooth net_bt_stack /proc/bluetooth/sleep/btwrite
-    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/state
-    chown bluetooth net_bt_stack /dev/ttyHS0
+    chown bluetooth bluetooth /proc/bluetooth/sleep/lpm
+    chown bluetooth bluetooth /proc/bluetooth/sleep/btwrite
+    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
+    chown bluetooth bluetooth /dev/ttyHS0
 
     # Create QMUX daemon socket area
     mkdir /dev/socket/qmux_audio 2770 media audio
@@ -271,8 +262,6 @@ on boot
     chown system radio /sys/class/sec/sec_touchkey/glove_mode
     chown system system /sys/class/sec/sec_touchkey/keypad_enable
     chmod 0660 /sys/class/sec/sec_touchkey/keypad_enable
-
-    chown system radio /sys/class/sec/tsp/cmd
 
     # TCP
     chown system system /sys/kernel/ipv4/tcp_wmem_min
@@ -388,22 +377,19 @@ on boot
     # RIL fast dormancy
     chown system radio /sys/class/sec/bamdmux/waketime
 
+    # Wifi firmware reload path
+    chown wifi wifi /sys/module/dhd/parameters/firmware_path
+
 service qcamerasvr /system/bin/mm-qcamera-daemon
     class late_start
     user camera
-    group camera system inet input graphics net_bt_stack
+    group camera system inet input graphics
 
 service mpdecision /system/bin/mpdecision --avg_comp
     class main
     user root
     group system readproc
     disabled
-
-service timekeep /system/bin/timekeep restore
-    class late_start
-    user root
-    group root
-    oneshot
 
 service kickstart /system/bin/qcks -i /firmware-mdm/image/
     user root
@@ -443,7 +429,7 @@ service irsc_util /system/bin/irsc_util "/etc/sec_config"
 service qmuxd /system/bin/qmuxd
     class main
     user root
-    group radio audio bluetooth gps qcom_diag log
+    group radio audio bluetooth gps diag log
 
 service netmgrd /system/bin/netmgrd
     class main
@@ -453,24 +439,13 @@ service netmgrd /system/bin/netmgrd
 on property:ro.data.large_tcp_window_size=true
     write /proc/sys/net/ipv4/tcp_adv_win_scale  2
 
-service p2p_supplicant /system/bin/wpa_supplicant \
+service wpa_supplicant /vendor/bin/hw/wpa_supplicant \
     -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf \
     -I/system/etc/wifi/wpa_supplicant_overlay.conf -N \
     -ip2p0 -Dnl80211 -c/data/misc/wifi/p2p_supplicant.conf \
     -I/system/etc/wifi/p2p_supplicant_overlay.conf \
     -puse_p2p_group_interface=1 -puse_multi_chan_concurrent=1 \
     -e/data/misc/wifi/entropy.bin -g@android:wpa_wlan0
-    #   we will start as root and wpa_supplicant will switch to user wifi
-    #   after setting up the capabilities required for WEXT
-    #   user wifi
-    #   group wifi inet keystore
-    class main
-    socket wpa_wlan0 dgram 660 wifi wifi
-    disabled
-    oneshot
-
-service wpa_supplicant /system/bin/wpa_supplicant -g@android:wpa_wlan0 \
-    -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf -e/data/misc/wifi/entropy.bin
     #   we will start as root and wpa_supplicant will switch to user wifi
     #   after setting up the capabilities required for WEXT
     #   user wifi
@@ -489,9 +464,9 @@ on property:init.svc.macloader=stopped
     chown root system /data/.rev
     chmod 0664 /data/.rev
 
-service charger /sbin/healthd -c
+service charger /charger
     class charger
-    seclabel u:r:healthd:s0
+    seclabel u:r:charger:s0
 
 service thermal-engine /system/bin/thermal-engine
     class main

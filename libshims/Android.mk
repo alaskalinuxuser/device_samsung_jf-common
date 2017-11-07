@@ -15,14 +15,7 @@
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
-
-LOCAL_SRC_FILES := \
-    samsung_ril.cpp
-
-LOCAL_SHARED_LIBRARIES := libbinder
-
-LOCAL_MODULE := libshim_ril
-LOCAL_MODULE_TAGS := optional
+LOCAL_SRC_FILES := jf_atomic.cpp
+LOCAL_MODULE := libshim_atomic
 LOCAL_MODULE_CLASS := SHARED_LIBRARIES
-
 include $(BUILD_SHARED_LIBRARY)
